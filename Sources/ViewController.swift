@@ -57,6 +57,10 @@ class ViewController: UIViewController {
         imageView2.image =
             try? UIImage(named: "AppleLogo")!
                 .aspectFit(size: CGSize(width: 120.0, height: 120.0))
+                .replace(colors: [
+                    (UIColor(red: 243/255, green: 187/255, blue: 75/255, alpha: 1.0), .darkGray),
+                    (UIColor(red: 206/255, green: 72/255, blue:69/255, alpha: 1.0), .black),
+                ], tolerance: 0.01)
         imageView2.layer.borderWidth = 0.5
         imageView2.layer.borderColor = UIColor.black.cgColor
         imageView2.layer.cornerRadius = 5.0

@@ -193,8 +193,8 @@ extension UIImage {
         return image;
     }
 
-/*
-    Work in progress
+    #if true
+    // Work in progress
 
     public func replace(colors: [(UIColor, UIColor)], tolerance: CGFloat) throws -> UIImage {
         if colors.isEmpty { return  self }
@@ -221,40 +221,99 @@ extension UIImage {
         }
 
         // Draw the image in the bitmap:
-        let size = self.size
+        let width: Int = Int(floor(self.size.width*self.scale))
+        let height: Int = Int(floor(self.size.height*self.scale))
         let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo =
+            CGBitmapInfo.byteOrder32Little.rawValue |
+            CGImageAlphaInfo.premultipliedFirst.rawValue
         guard let context = CGContext(
             data: nil,
-            width: Int(size.width),
-            height: Int(size.height),
-            bitsPerComponent: Int(8),
-            bytesPerRow: Int(0),
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
             space: colorSpace,
-            bitmapInfo: UInt32(CGImageAlphaInfo.last.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+            bitmapInfo: bitmapInfo
         ) else {
             throw ImageError.CantCreateContext
         }
         UIGraphicsPushContext(context)
-        self.draw(in: CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height))
+        self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
         context.flush()
         UIGraphicsPopContext()
 
-        // Find and replace the colors:
-        let pixels = [UInt32]() //= context.data
-        let rowWidth: Int = context.bytesPerRow / 4 // 8 bits * (4 RGBA components) = 32 bits / 8 bits per byte.
+        // Get the  pixels:
+        guard let contextData = context.data else {
+            throw ImageError.CantCreateContext
+        }
+        let pixels: UnsafeMutablePointer<UInt32> = contextData.bindMemory(
+            to: UInt32.self,
+            capacity: context.bytesPerRow * height /  4
+        )
+        // RowWidth: 8 bits * (4 RGBA components) = 32 bits / 8 bits per byte.
+        let rowWidth: Int = context.bytesPerRow / 4
 
-        for y in 0..<Int(size.height) {
-            var p = pixels[y * rowWidth]
-            for x in 0..<Int(size.width) {
-                let hue = hueFromLong(p)
+        // Find and replace the colors:
+        for y in 0..<height {
+            for x in 0..<width {
+                let pixel = pixels[y * rowWidth + x]
+                let hue = hueFromPixel(pixel)
+                for r in replacements {
+                    if hue >= r.fromHueMin && hue <= r.fromHueMax {
+                        pixels[y * rowWidth + x] = 0xff0000ff // updatePixelHue(pixel, r.toHue)
+                        break
+                    }
+                }
             }
         }
-
         guard let cgimage = context.makeImage() else {
             throw ImageError.CantCreateImage
         }
-        return UIImage(cgImage: cgimage)
+        return UIImage(cgImage: cgimage, scale: scale, orientation: .downMirrored)
     }
-*/
+    #endif
 
+}
+
+@inline(__always)
+func colorFromPixel(_ pixel: UInt32) -> UIColor {
+    let a:CGFloat = CGFloat((pixel & 0xff000000) >> 24) / 255.0
+    let r:CGFloat = CGFloat((pixel & 0x00ff0000) >> 16) / 255.0
+    let g:CGFloat = CGFloat((pixel & 0x0000ff00) >>  8) / 255.0
+    let b:CGFloat = CGFloat(pixel & 0x000000ff) / 255.0
+    return UIColor(red: r, green: g, blue: b, alpha: a)
+}
+
+@inline(__always)
+func pixelFromColor(_ color: UIColor) -> UInt32 {
+    var r: CGFloat = 0.0
+    var g: CGFloat = 0.0
+    var b: CGFloat = 0.0
+    var a: CGFloat = 0.0
+    color.getRed(&r, green: &g, blue: &b, alpha: &a)
+    return
+        ((UInt32(a * 255.0) & 0x000000ff) << 24) |
+        ((UInt32(r * 255.0) & 0x000000ff) << 16) |
+        ((UInt32(g * 255.0) & 0x000000ff) <<  8) |
+         (UInt32(b * 255.0) & 0x000000ff)
+}
+
+@inline(__always)
+func hueFromPixel(_ pixel: UInt32) -> CGFloat {
+    var hue: CGFloat = 0.0
+    let c = colorFromPixel(pixel)
+    c.getHue(&hue, saturation: nil, brightness: nil, alpha: nil)
+    return hue
+}
+
+@inline(__always)
+func updatePixelHue(_ pixel: UInt32, _ hue: CGFloat) -> UInt32 {
+    let c = colorFromPixel(pixel)
+    var s: CGFloat = 0.0
+    var b: CGFloat = 0.0
+    var a: CGFloat = 0.0
+    c.getHue(nil, saturation: &s, brightness: &b, alpha: &a)
+    let c1 = UIColor(hue: hue, saturation: s, brightness: b, alpha: a)
+    return pixelFromColor(c1)
 }

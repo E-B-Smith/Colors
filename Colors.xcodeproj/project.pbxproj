@@ -13,7 +13,7 @@
 		B98DCB83263666D200B29BD3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B98DCB81263666D200B29BD3 /* LaunchScreen.storyboard */; };
 		B98DCB8E263666D300B29BD3 /* ColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCB8D263666D300B29BD3 /* ColorsTests.swift */; };
 		B98DCBAD2636681200B29BD3 /* UIImage+Effects.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCBAC2636681200B29BD3 /* UIImage+Effects.swift */; };
-		B997A0FE26374FAC000BC3DD /* ColorsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCB98263666D300B29BD3 /* ColorsUITests.swift */; };
+		B9FDBBEA2637C14900A0D3D1 /* ColorsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCB98263666D300B29BD3 /* ColorsUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -263,7 +263,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B98DCB8E263666D300B29BD3 /* ColorsTests.swift in Sources */,
-				B997A0FE26374FAC000BC3DD /* ColorsUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +270,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9FDBBEA2637C14900A0D3D1 /* ColorsUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +513,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.affirm.ColorsUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Colors;
@@ -533,6 +534,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.affirm.ColorsUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Colors;
