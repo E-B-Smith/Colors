@@ -29,6 +29,14 @@ extension CGRect {
 
 extension UIImage {
 
+    /**
+     Returns a solid color image with the given rectangle size.
+
+     - Parameters:
+       - color:     The color for the image.
+       - size:      The size of the image.
+     - Returns:     Returns an image with a solid color of the given size.
+    */
     public static func image(color: UIColor, size: CGSize) throws -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         defer { UIGraphicsEndImageContext() }
@@ -43,6 +51,13 @@ extension UIImage {
         return image
     }
 
+    /**
+     Draws the passed image on top of the current image and returns the result.
+
+     - Parameters:
+       - image:     The image to draw on top of the receiver.
+     - Returns:     Returns an image composed of the current image with the passed image on top.
+    */
     public func union(_ image: UIImage) throws -> UIImage {
         let selfRect = CGRect(
             origin: .zero,
