@@ -14,6 +14,7 @@
 		B98DCB8E263666D300B29BD3 /* ColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCB8D263666D300B29BD3 /* ColorsTests.swift */; };
 		B98DCBAD2636681200B29BD3 /* UIImage+Effects.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCBAC2636681200B29BD3 /* UIImage+Effects.swift */; };
 		B9FDBBEA2637C14900A0D3D1 /* ColorsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DCB98263666D300B29BD3 /* ColorsUITests.swift */; };
+		E3E21F942639ED0E00CF5597 /* IconFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E21F932639ED0E00CF5597 /* IconFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		B98DCB94263666D300B29BD3 /* ColorsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColorsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B98DCB98263666D300B29BD3 /* ColorsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsUITests.swift; sourceTree = "<group>"; };
 		B98DCBAC2636681200B29BD3 /* UIImage+Effects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Effects.swift"; sourceTree = "<group>"; };
+		E3E21F932639ED0E00CF5597 /* IconFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 				B98DCB76263666D100B29BD3 /* AppDelegate.swift */,
 				B98DCBAC2636681200B29BD3 /* UIImage+Effects.swift */,
 				B98DCB7A263666D100B29BD3 /* ViewController.swift */,
+				E3E21F932639ED0E00CF5597 /* IconFactory.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B98DCB7B263666D100B29BD3 /* ViewController.swift in Sources */,
+				E3E21F942639ED0E00CF5597 /* IconFactory.swift in Sources */,
 				B98DCB77263666D100B29BD3 /* AppDelegate.swift in Sources */,
 				B98DCBAD2636681200B29BD3 /* UIImage+Effects.swift in Sources */,
 			);

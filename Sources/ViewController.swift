@@ -122,6 +122,13 @@ class ViewController: UIViewController {
     }
 
     private func iconInView(name: String, scheme: ColorScheme) -> UIView {
-        return UIView()
+        let icon = try? IconFactory.createIcon(name: name, scheme: scheme).aspectFit(size: CGSize(width: 120.0, height: 120.0))
+
+        let labelImage = LabeledImage(
+            text: "\(name) in \(scheme.value())",
+            image: icon!
+        )
+
+        return labelImage
     }
 }
