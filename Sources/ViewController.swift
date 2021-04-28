@@ -15,6 +15,49 @@ extension UIImage {
     }
 }
 
+final class LabeledImage: UIView {
+    var label: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 20.0)
+        label.textColor = .black
+        label.textAlignment = .center
+        return label
+    }()
+    var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.borderWidth = 0.5
+        imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.layer.cornerRadius = 5.0
+        return imageView
+    }()
+
+    init(text: String, image: UIImage) {
+        super.init(frame: .zero)
+        label.text = text
+        imageView.image = image
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        addSubview(imageView)
+
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: topAnchor),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+            imageView.topAnchor.constraint(equalTo: label.bottomAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 // MARK: -
 
 class ViewController: UIViewController {
@@ -23,64 +66,53 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
 
-        let label1 = UILabel()
-        label1.font = UIFont.boldSystemFont(ofSize: 20.0)
-        label1.textColor = .black
-        label1.text = "Plain"
-
-        let imageView1 = UIImageView()
-        imageView1.image =
-            try? UIImage(named: "AppleLogo")!
-                .aspectFit(size: CGSize(width: 120.0, height: 120.0))
-        imageView1.layer.borderWidth = 0.5
-        imageView1.layer.borderColor = UIColor.black.cgColor
-        imageView1.layer.cornerRadius = 5.0
-
-        let spacer = UIView()
-        let heightConstraint = NSLayoutConstraint(
-            item: spacer,
-            attribute: NSLayoutConstraint.Attribute.height,
-            relatedBy: NSLayoutConstraint.Relation.equal,
-            toItem: nil,
-            attribute: NSLayoutConstraint.Attribute.notAnAttribute,
-            multiplier: 1,
-            constant: 38
-        )
-        spacer.addConstraint(heightConstraint)
-
-        let label2 = UILabel()
-        label2.font = UIFont.boldSystemFont(ofSize: 20.0)
-        label2.textColor = .black
-        label2.text = "Colors Replaced"
-
-        let imageView2 = UIImageView()
-        imageView2.image =
-            try? UIImage(named: "AppleLogo")!
-                .aspectFit(size: CGSize(width: 120.0, height: 120.0))
-                .replace(colors: [
-                    (UIColor(red: 243/255, green: 187/255, blue: 75/255, alpha: 1.0), .gray),
-                    (UIColor(red: 206/255, green: 72/255, blue:69/255, alpha: 1.0), .black),
-                ], tolerance: 0.015)
-        imageView2.layer.borderWidth = 0.5
-        imageView2.layer.borderColor = UIColor.black.cgColor
-        imageView2.layer.cornerRadius = 5.0
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .gray
 
         let stackView = UIStackView(arrangedSubviews: [
-            label1,
-            imageView1,
-            spacer,
-            label2,
-            imageView2,
+            plainLogo(),
+            enhancedLogo()
         ])
+
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        view.addSubview(stackView)
+        stackView.spacing = 30
+
         NSLayoutConstraint.activate([
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            heightConstraint,
         ])
+    }
+
+    private func plainLogo() -> UIView {
+        let image = try? UIImage(named: "AppleLogo")!
+                .aspectFit(size: CGSize(width: 120.0, height: 120.0))
+        let labeledImage = LabeledImage(text: "Plain", image: image!)
+
+        return labeledImage
+    }
+
+    private func enhancedLogo() -> UIView {
+        let image = try? UIImage(named: "AppleLogo")!
+            .aspectFit(size: CGSize(width: 120.0, height: 120.0))
+            .replace(colors: [
+                (UIColor(red: 243/255, green: 187/255, blue: 75/255, alpha: 1.0), .darkGray),
+                (UIColor(red: 206/255, green: 72/255, blue:69/255, alpha: 1.0), .black),
+            ], tolerance: 0.01)
+        let labeledImage = LabeledImage(text: "Enhanced", image: image!)
+
+        return labeledImage
     }
 }
