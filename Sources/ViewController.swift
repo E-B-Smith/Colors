@@ -18,7 +18,7 @@ extension UIImage {
 final class LabeledImage: UIView {
     var label: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 20.0)
+        label.font = UIFont.boldSystemFont(ofSize: 16.0)
         label.textColor = .black
         label.textAlignment = .center
         return label
@@ -47,9 +47,10 @@ final class LabeledImage: UIView {
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
 
             imageView.topAnchor.constraint(equalTo: label.bottomAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            imageView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            imageView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }
 
@@ -70,8 +71,12 @@ class ViewController: UIViewController {
         scrollView.backgroundColor = .gray
 
         let stackView = UIStackView(arrangedSubviews: [
-            plainLogo(),
-            enhancedLogo()
+            plainLogoView(),
+            enhancedLogoView(),
+            iconInView(name: "icon_briefcase_grayscale", scheme: .grayscale),
+            iconInView(name: "icon_briefcase_grayscale", scheme: .inverse),
+            iconInView(name: "icon_briefcase_grayscale", scheme: .primary),
+            iconInView(name: "icon_briefcase_grayscale", scheme: .destructive)
         ])
 
         view.addSubview(scrollView)
@@ -92,11 +97,11 @@ class ViewController: UIViewController {
 
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
         ])
     }
 
-    private func plainLogo() -> UIView {
+    private func plainLogoView() -> UIView {
         let image = try? UIImage(named: "AppleLogo")!
                 .aspectFit(size: CGSize(width: 120.0, height: 120.0))
         let labeledImage = LabeledImage(text: "Plain", image: image!)
@@ -104,7 +109,7 @@ class ViewController: UIViewController {
         return labeledImage
     }
 
-    private func enhancedLogo() -> UIView {
+    private func enhancedLogoView() -> UIView {
         let image = try? UIImage(named: "AppleLogo")!
             .aspectFit(size: CGSize(width: 120.0, height: 120.0))
             .replace(colors: [
@@ -114,5 +119,9 @@ class ViewController: UIViewController {
         let labeledImage = LabeledImage(text: "Enhanced", image: image!)
 
         return labeledImage
+    }
+
+    private func iconInView(name: String, scheme: ColorScheme) -> UIView {
+        return UIView()
     }
 }
