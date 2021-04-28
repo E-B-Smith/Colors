@@ -208,31 +208,35 @@ extension UIImage {
         return image;
     }
 
-    #if true
-    // Work in progress
+    /**
+     Creates a new image replacing the colors in the receiver image with the new colors.
 
+     - Parameters:
+       - colors:    An array of colors to replace. The first color in the tuple is the "from" color, the color
+                    to replace. The second color in the tuple is the "to" color, the color to use as a replacement.
+       - tolerance: The tolerance to use when matching the "from" color. This is a percentage, 0.0 to 1.0.
+     - Returns:     Returns an image with the color replacements.
+    */
     public func replace(colors: [(UIColor, UIColor)], tolerance: CGFloat) throws -> UIImage {
         if colors.isEmpty { return  self }
+        let tolerance = max(min(tolerance, 1.0), 0.0)
 
         // Set up our data:
         struct ColorReplacement {
-            let fromHueMin: CGFloat
-            let fromHueMax: CGFloat
-            let toHue: CGFloat
+            let fromColor: [CGFloat]
+            let toColor: UInt32
         }
 
         var replacements = [ColorReplacement]()
         for c in colors {
-            var fromHue: CGFloat = 0.0
-            c.0.getHue(&fromHue, saturation: nil, brightness: nil, alpha: nil)
-            var toHue: CGFloat = 0.0
-            c.1.getHue(&toHue, saturation: nil, brightness: nil, alpha: nil)
-            let r = ColorReplacement(
-                fromHueMin: fromHue - tolerance,
-                fromHueMax: fromHue + tolerance,
-                toHue: toHue
+            var a,r,g,b: CGFloat
+            a = 0; r = 0; g = 0; b = 0;
+            c.0.getRed(&r, green: &g, blue: &b, alpha: &a)
+            let replacement = ColorReplacement(
+                fromColor: [a*255,r*255,g*255,b*255],
+                toColor: pixelFromColor(c.1)
             )
-            replacements.append(r)
+            replacements.append(replacement)
         }
 
         // Draw the image in the bitmap:
@@ -266,17 +270,17 @@ extension UIImage {
             to: UInt32.self,
             capacity: context.bytesPerRow * height /  4
         )
-        // RowWidth: 8 bits * (4 RGBA components) = 32 bits / 8 bits per byte.
+        // RowWidth in pixels: 8 bits * (4 RGBA components) = 32 bits / 8 bits per byte.
         let rowWidth: Int = context.bytesPerRow / 4
 
         // Find and replace the colors:
         for y in 0..<height {
+            let row = y*rowWidth
             for x in 0..<width {
-                let pixel = pixels[y * rowWidth + x]
-                let hue = hueFromPixel(pixel)
+                let pixel = pixels[row + x]
                 for r in replacements {
-                    if hue >= r.fromHueMin && hue <= r.fromHueMax {
-                        pixels[y * rowWidth + x] = 0xff0000ff // updatePixelHue(pixel, r.toHue)
+                    if distance(pixel, r.fromColor) <= tolerance {
+                        pixels[row + x] = r.toColor
                         break
                     }
                 }
@@ -287,8 +291,18 @@ extension UIImage {
         }
         return UIImage(cgImage: cgimage, scale: scale, orientation: .downMirrored)
     }
-    #endif
+}
 
+@inline(__always)
+func distance(_ pixel: UInt32, _ color: [CGFloat]) -> CGFloat {
+    var pixel = pixel
+    var d: Double =  0
+    for idx in (1...3).reversed() {
+        let v = CGFloat(pixel & 0x000000ff) - color[idx]
+        d += Double(v*v)
+        pixel >>= 8
+    }
+    return CGFloat(d / (255*255*3))
 }
 
 @inline(__always)
@@ -296,7 +310,7 @@ func colorFromPixel(_ pixel: UInt32) -> UIColor {
     let a:CGFloat = CGFloat((pixel & 0xff000000) >> 24) / 255.0
     let r:CGFloat = CGFloat((pixel & 0x00ff0000) >> 16) / 255.0
     let g:CGFloat = CGFloat((pixel & 0x0000ff00) >>  8) / 255.0
-    let b:CGFloat = CGFloat(pixel & 0x000000ff) / 255.0
+    let b:CGFloat = CGFloat( pixel & 0x000000ff) / 255.0
     return UIColor(red: r, green: g, blue: b, alpha: a)
 }
 
@@ -312,23 +326,4 @@ func pixelFromColor(_ color: UIColor) -> UInt32 {
         ((UInt32(r * 255.0) & 0x000000ff) << 16) |
         ((UInt32(g * 255.0) & 0x000000ff) <<  8) |
          (UInt32(b * 255.0) & 0x000000ff)
-}
-
-@inline(__always)
-func hueFromPixel(_ pixel: UInt32) -> CGFloat {
-    var hue: CGFloat = 0.0
-    let c = colorFromPixel(pixel)
-    c.getHue(&hue, saturation: nil, brightness: nil, alpha: nil)
-    return hue
-}
-
-@inline(__always)
-func updatePixelHue(_ pixel: UInt32, _ hue: CGFloat) -> UInt32 {
-    let c = colorFromPixel(pixel)
-    var s: CGFloat = 0.0
-    var b: CGFloat = 0.0
-    var a: CGFloat = 0.0
-    c.getHue(nil, saturation: &s, brightness: &b, alpha: &a)
-    let c1 = UIColor(hue: hue, saturation: s, brightness: b, alpha: a)
-    return pixelFromColor(c1)
 }
