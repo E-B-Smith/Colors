@@ -103,6 +103,9 @@ extension UIImage {
         return newImage
     }
 
+    /**
+     Draws the image in an oval that fits the original size of the image
+    */
     public func ovalImage() throws -> UIImage {
         let rect = CGRect(origin: .zero, size: self.size)
         UIGraphicsBeginImageContextWithOptions(rect.size, false, self.scale)
@@ -136,6 +139,13 @@ extension UIImage {
         return image
     }
 
+    /**
+     Draws the image to fit the given size, while still retaining the original aspect ratio.
+
+     - Parameters:
+       - size:     The size of the image.
+     - Returns:     Returns an image that fits the given size while maintaining its aspect ratio.
+    */
     public func aspectFit(size: CGSize) throws -> UIImage {
         guard
             size.height > 0.0,
@@ -176,6 +186,13 @@ extension UIImage {
         return image;
     }
 
+    /**
+     Draws the image to fill the given size, cropping off parts that don't fit when retaining the original aspect ratio.
+
+     - Parameters:
+       - size:     The size of the image.
+     - Returns:    Returns an image that fills the given size and crops off parts that don't fit when retaining the original aspect ratio.
+    */
     public func aspectFill(size: CGSize) throws -> UIImage {
         guard
             size.height > 0.0,
