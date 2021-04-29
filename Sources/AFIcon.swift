@@ -15,7 +15,7 @@ enum ColorScheme: Equatable {
     case destructive
     case custom(primary: UIColor, light: UIColor, dark: UIColor)
 
-    func value() -> String {
+    var string: String {
         switch self {
         case .grayscale: return "grayscale"
         case .inverse: return "inverse"

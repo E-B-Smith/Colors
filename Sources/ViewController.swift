@@ -85,7 +85,7 @@ class ViewController: UIViewController {
         let icon = try? AFIcon.named(name, scheme: scheme).aspectFit(size: CGSize(width: 24.0, height: 24.0))
 
         let labelImage = LabeledImage(
-            text: "\(name) in \(scheme.value())",
+            text: "\(name) in \(scheme.string)",
             image: icon!
         )
 
