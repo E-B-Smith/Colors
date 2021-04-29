@@ -33,10 +33,12 @@ enum ColorShade: CaseIterable {
 }
 
 enum AFIcon {
-    static func named(_ name: String, scheme: ColorScheme) -> UIImage {
-        let image = UIImage(named: name)!
+    static func named(_ name: String, scheme: ColorScheme, size: CGSize = CGSize(width: 24.0, height: 24.0)) -> UIImage {
+        guard let image = UIImage(named: name) else { return UIImage()}
 
-        let updatedImage = replaceColors(for: image, scheme: scheme)
+        let sizedImage = try? image.aspectFit(size: size)
+
+        let updatedImage = replaceColors(for: sizedImage ?? image, scheme: scheme)
         return updatedImage
     }
 
