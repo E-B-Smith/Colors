@@ -45,18 +45,19 @@ extension UIImage {
        - size:      The size of the image.
      - Returns:     Returns an image with a solid color of the given size.
     */
-    public static func image(color: UIColor, size: CGSize) throws -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+    public convenience init(color: UIColor, size: CGSize) throws {
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
         defer { UIGraphicsEndImageContext() }
         guard let context = UIGraphicsGetCurrentContext() else {
             throw ImageError.CantCreateContext
         }
         context.setFillColor(color.cgColor)
         context.fill(CGRect(origin: .zero, size: size))
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+        guard let cgimage = UIGraphicsGetImageFromCurrentImageContext()?.cgImage else {
             throw ImageError.CantCreateImage
         }
-        return image
+        self.init(cgImage: cgimage, scale: scale, orientation: .up)
     }
 
     /**
@@ -104,7 +105,9 @@ extension UIImage {
     }
 
     /**
-     Draws the image in an oval that fits the original size of the image
+     Draws the image in an oval that fits the original size of the image.
+
+     - Returns: Returns the original image masked to an enclosing oval.
     */
     public func ovalImage() throws -> UIImage {
         let rect = CGRect(origin: .zero, size: self.size)
@@ -143,7 +146,7 @@ extension UIImage {
      Draws the image to fit the given size, while still retaining the original aspect ratio.
 
      - Parameters:
-       - size:     The size of the image.
+       - size:      The size of the image.
      - Returns:     Returns an image that fits the given size while maintaining its aspect ratio.
     */
     public func aspectFit(size: CGSize) throws -> UIImage {
@@ -187,11 +190,13 @@ extension UIImage {
     }
 
     /**
-     Draws the image to fill the given size, cropping off parts that don't fit when retaining the original aspect ratio.
+     Draws the image to fill the given size, cropping off parts that don't fit when retaining the original
+     aspect ratio.
 
      - Parameters:
        - size:     The size of the image.
-     - Returns:    Returns an image that fills the given size and crops off parts that don't fit when retaining the original aspect ratio.
+     - Returns:    Returns an image that fills the given size and crops off parts that don't fit when retaining
+                   the original aspect ratio.
     */
     public func aspectFill(size: CGSize) throws -> UIImage {
         guard

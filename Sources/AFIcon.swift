@@ -33,7 +33,11 @@ enum ColorShade: CaseIterable {
 }
 
 enum AFIcon {
-    static func named(_ name: String, scheme: ColorScheme, size: CGSize = CGSize(width: 24.0, height: 24.0)) -> UIImage {
+    static func named(
+        _ name: String,
+        scheme: ColorScheme,
+        size: CGSize = CGSize(width: 24.0, height: 24.0)
+    ) -> UIImage {
         guard let image = UIImage(named: name) else { return UIImage()}
 
         let sizedImage = try? image.aspectFit(size: size)
@@ -84,24 +88,26 @@ extension UIColor {
         case (.custom(_, _, let dark), .dark): return dark
         }
 
-        return UIColor(fromHex: hexCode)
+        return UIColor(hex: hexCode)
     }
 
-    convenience init(fromHex hexString: String) {
-         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-         var int = UInt64()
-         Scanner(string: hex).scanHexInt64(&int)
-         let a, r, g, b: UInt64
-         switch hex.count {
-         case 3: // RGB (12-bit)
-             (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-         case 6: // RGB (24-bit)
-             (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-         case 8: // ARGB (32-bit)
-             (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-         default:
-             (a, r, g, b) = (255, 0, 0, 0)
-         }
-         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    convenience init(hex hexString: String) {
+        let hexCharacters = "1234567890abcdefABCDEF"
+        let hexCharacterSet = CharacterSet(charactersIn: hexCharacters)
+        let hex = hexString.trimmingCharacters(in: hexCharacterSet.inverted)
+        var int = UInt64()
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
      }
 }

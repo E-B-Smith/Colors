@@ -94,4 +94,10 @@ class ColorsTests: XCTestCase {
         let color = colorFromPixel(pixel)
         assertColorsEqual(color, kTestColor)
     }
+
+    func testDistance() {
+        XCTAssertEqual(distance(0xffffffff, [0, 0, 0, 0]), 1.0)
+        XCTAssertEqual(distance(0xffffffff, [255, 255, 255, 255]), 0.0)
+        XCTAssertEqual(distance(0x7f7f7f7f, [255, 255, 255, 255]), 0.25, accuracy: 0.002)
+    }
 }
