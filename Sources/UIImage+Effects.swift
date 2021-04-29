@@ -15,6 +15,14 @@ public enum ImageError: String, Error {
 }
 
 extension CGRect {
+
+    /**
+     Returns a rectangle the same size as the receiver that is centered over the passed rectangle.
+
+     - Parameters:
+       - overRect:      The rectangle to center over.
+     - Returns:         A rectangle the same size as the receiver centered over the passed rectangle.
+    */
     public func centerOver(_ overRect: CGRect) -> CGRect {
         let origin = CGPoint(
             x: overRect.origin.x + ((overRect.size.width - self.size.width)/2.0),
@@ -258,6 +266,8 @@ extension UIImage {
             throw ImageError.CantCreateContext
         }
         UIGraphicsPushContext(context)
+        context.scaleBy(x: 1, y: -1)
+        context.translateBy(x: 0, y: -CGFloat(height))
         self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
         context.flush()
         UIGraphicsPopContext()
@@ -289,7 +299,7 @@ extension UIImage {
         guard let cgimage = context.makeImage() else {
             throw ImageError.CantCreateImage
         }
-        return UIImage(cgImage: cgimage, scale: scale, orientation: .downMirrored)
+        return UIImage(cgImage: cgimage, scale: scale, orientation: .up)
     }
 }
 
