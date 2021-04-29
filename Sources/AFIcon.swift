@@ -1,5 +1,5 @@
 //
-//  IconFactory.swift
+//  AFIcon.swift
 //  Colors
 //
 //  Created by Stephanie Lee on 4/28/21.
@@ -32,8 +32,8 @@ enum ColorShade: CaseIterable {
     case dark
 }
 
-enum IconFactory {
-    static func createIcon(name: String, scheme: ColorScheme) -> UIImage {
+enum AFIcon {
+    static func named(_ name: String, scheme: ColorScheme) -> UIImage {
         let image = UIImage(named: name)!
 
         let updatedImage = replaceColors(for: image, scheme: scheme)
