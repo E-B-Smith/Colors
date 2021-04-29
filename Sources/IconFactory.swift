@@ -53,7 +53,11 @@ enum IconFactory {
             colorMap.append(colorPair)
         }
 
-        return try! image.replace(colors: colorMap, tolerance: 0)
+        if let modifiedImage = try? image.replace(colors: colorMap, tolerance: 0.017) {
+            return modifiedImage
+        } else {
+            return image
+        }
     }
 }
 
