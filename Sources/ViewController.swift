@@ -28,7 +28,7 @@ class ViewController: UIViewController {
         view.backgroundColor = .gray
 
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .white
+        scrollView.backgroundColor = UIColor(fromHex: "#EEEEEE")
 
         let stackView = UIStackView(arrangedSubviews: [
             plainLogoView(),
@@ -36,7 +36,11 @@ class ViewController: UIViewController {
             iconInView(name: "icon_briefcase_grayscale", scheme: .grayscale),
             iconInView(name: "icon_briefcase_grayscale", scheme: .inverse),
             iconInView(name: "icon_briefcase_grayscale", scheme: .primary),
-            iconInView(name: "icon_briefcase_grayscale", scheme: .destructive)
+            iconInView(name: "icon_briefcase_grayscale", scheme: .destructive),
+            iconInView(
+                name: "icon_briefcase_grayscale",
+                scheme: .custom(primary: .systemPink, light: .cyan, dark: .brown)
+            )
         ])
 
         view.addSubview(scrollView)
