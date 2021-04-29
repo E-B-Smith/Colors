@@ -28,11 +28,12 @@ class ViewController: UIViewController {
         view.backgroundColor = .gray
 
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = UIColor(fromHex: "#EEEEEE")
+        scrollView.backgroundColor = UIColor(hex: "#EEEEEE")
 
         let stackView = UIStackView(arrangedSubviews: [
             plainLogoView(),
             enhancedLogoView(),
+            composedLogoView(),
             iconInView(name: "icon_briefcase_grayscale", scheme: .grayscale),
             iconInView(name: "icon_briefcase_grayscale", scheme: .inverse),
             iconInView(name: "icon_briefcase_grayscale", scheme: .primary),
@@ -45,7 +46,6 @@ class ViewController: UIViewController {
 
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-
         scrollView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -77,22 +77,34 @@ class ViewController: UIViewController {
         let image = try? UIImage(named: "AppleLogo")!
             .aspectFit(size: CGSize(width: 120.0, height: 120.0))
             .replace(colors: [
-                (UIColor(red: 243/255, green: 187/255, blue: 75/255, alpha: 1.0), .darkGray),
+                (UIColor(red: 243/255, green: 187/255, blue: 75/255, alpha: 1.0), .gray),
                 (UIColor(red: 206/255, green: 72/255, blue:69/255, alpha: 1.0), .black),
-            ], tolerance: 0.01)
-        let labeledImage = LabeledImage(text: "Enhanced", image: image!)
+            ], tolerance: 0.015)
+        let labeledImage = LabeledImage(text: "Color Swapped", image: image!)
+        return labeledImage
+    }
 
+    private func composedLogoView() -> UIView {
+        let image = try? UIImage(color: UIColor(hex: "#77e7ff"), size: CGSize(width: 120.0, height: 120.0))
+            .union(UIImage(color: .black, size: CGSize(width: 100, height:  100))
+                .ovalImage()
+            )
+            .union(UIImage(color: .white, size: CGSize(width: 92, height:  92))
+                .ovalImage()
+            )
+            .union(UIImage(named: "AppleLogo")!
+                .aspectFit(size: CGSize(width: 60, height: 60))
+            )
+        let labeledImage = LabeledImage(text: "Composed", image: image!)
         return labeledImage
     }
 
     private func iconInView(name: String, scheme: ColorScheme) -> UIView {
         let icon = AFIcon.named(name, scheme: scheme, size: CGSize(width: 100, height: 100))
-
         let labelImage = LabeledImage(
             text: "\(name) in \(scheme.string)",
             image: icon
         )
-
         return labelImage
     }
 }

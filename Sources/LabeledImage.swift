@@ -39,7 +39,7 @@ final class LabeledImage: UIView {
             label.leadingAnchor.constraint(equalTo: leadingAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
 
-            imageView.topAnchor.constraint(equalTo: label.bottomAnchor),
+            imageView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 5),
             imageView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
             imageView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
