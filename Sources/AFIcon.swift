@@ -32,38 +32,46 @@ enum ColorShade: CaseIterable {
     case dark
 }
 
+extension UIImage {
+    func tint(scheme: ColorScheme) throws -> UIImage {
+        // The default color scheme for an icon is .grayscale.
+        guard scheme != .grayscale else {
+            return self
+        }
+        var colorMap: [(UIColor, UIColor)] = []
+        for shade in ColorShade.allCases {
+            let colorPair = (UIColor.color(for: .grayscale, type: shade), UIColor.color(for: scheme, type: shade))
+            colorMap.append(colorPair)
+        }
+        guard let image = try? self.replace(colors: colorMap, tolerance: 0.015) else {
+            return self
+        }
+        return image
+    }
+}
+
 enum AFIcon {
     static func named(
         _ name: String,
         scheme: ColorScheme,
         size: CGSize = CGSize(width: 24.0, height: 24.0)
     ) -> UIImage {
-        guard let image = UIImage(named: name) else { return UIImage()}
-
-        let sizedImage = try? image.aspectFit(size: size)
-
-        let updatedImage = replaceColors(for: sizedImage ?? image, scheme: scheme)
-        return updatedImage
+        // let bigSize = CGSize(width: size.width*4, height: size.height*4)
+        guard let image =
+            try? UIImage(named: name)?
+                .aspectFit(size: size)
+                .tint(scheme: scheme)
+        else {
+            return UIImage()
+        }
+        return image
     }
 
-    private static func replaceColors(for image: UIImage, scheme: ColorScheme) -> UIImage {
-        // the default color scheme for an icon is .grayscale
-        guard scheme != .grayscale else {
-            return image
+    private static func tint(for image: UIImage, scheme: ColorScheme) -> UIImage {
+        if let tinted = try? image.tint(scheme: scheme) {
+            return tinted
         }
-
-        var colorMap: [(UIColor, UIColor)] = []
-
-        for shade in ColorShade.allCases {
-            let colorPair = (UIColor.color(for: .grayscale, type: shade), UIColor.color(for: scheme, type: shade))
-            colorMap.append(colorPair)
-        }
-
-        if let modifiedImage = try? image.replace(colors: colorMap, tolerance: 0.017) {
-            return modifiedImage
-        } else {
-            return image
-        }
+        return image
     }
 }
 
