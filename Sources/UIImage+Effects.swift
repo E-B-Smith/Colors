@@ -81,13 +81,13 @@ extension UIImage {
      Returns a transparent rectangle of given size with a border respecting the given radius.
 
      - Parameters:
-       - color:     The color for the image.
+       - color:     The color for the border.
        - size:      The size of the image.
-       - radius:    The radius used if drawing rounded corners. Defaults to nil.
-       - isDashed:  A boolean that states if the drawn border is solid or dashed
+       - radius:    The radius used if drawing rounded corners. Defaults to 0.
+       - isDashed:  A boolean that states if the drawn border is solid or dashed. Defaults to false.
      - Returns:     Returns an image with a solid color of the given size.
     */
-    public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool) throws {
+    public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool = false) throws {
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         defer { UIGraphicsEndImageContext() }
