@@ -34,6 +34,8 @@ class ViewController: UIViewController {
             plainLogoView(),
             enhancedLogoView(),
             composedLogoView(),
+            iconWithRoundedRectangle(name: "icon_calculator_grayscale"),
+            iconWithBackground(name: "icon_calculator_grayscale", scheme: .grayscale),
             iconInView(name: "icon_briefcase_grayscale", scheme: .grayscale),
             iconInView(name: "icon_briefcase_grayscale", scheme: .inverse),
             iconInView(name: "icon_briefcase_grayscale", scheme: .primary),
@@ -106,5 +108,13 @@ class ViewController: UIViewController {
             image: icon
         )
         return labelImage
+    }
+
+    private func iconWithRoundedRectangle(name: String) -> UIView {
+        let icon = AFIcon.named(name, scheme: .grayscale, size: CGSize(width: 50, height: 50))
+        let image = try? UIImage(color: .yellow, size: CGSize(width: 200, height: 92), radius: 50, isDashed: true)
+
+        let newImage = try? image!.union(icon)
+        return LabeledImage(text: "Icon with oval background", image: newImage!)
     }
 }

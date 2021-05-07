@@ -43,17 +43,73 @@ extension UIImage {
      - Parameters:
        - color:     The color for the image.
        - size:      The size of the image.
+       - radius:    The radius used if drawing rounded corners. Defaults to nil.
      - Returns:     Returns an image with a solid color of the given size.
     */
-    public convenience init(color: UIColor, size: CGSize) throws {
+    public convenience init(color: UIColor, size: CGSize, radius: CGFloat? = nil) throws {
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         defer { UIGraphicsEndImageContext() }
         guard let context = UIGraphicsGetCurrentContext() else {
             throw ImageError.CantCreateContext
         }
-        context.setFillColor(color.cgColor)
-        context.fill(CGRect(origin: .zero, size: size))
+
+        let rect = CGRect(origin: .zero, size: size)
+        if let radius = radius {
+            context.setFillColor(UIColor.clear.cgColor)
+            context.fill(rect)
+
+            let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: radius).cgPath
+
+            context.addPath(clipPath)
+            context.setFillColor(color.cgColor)
+
+            context.closePath()
+            context.fillPath()
+        } else {
+            context.setFillColor(color.cgColor)
+            context.fill(rect)
+        }
+
+        guard let cgimage = UIGraphicsGetImageFromCurrentImageContext()?.cgImage else {
+            throw ImageError.CantCreateImage
+        }
+        self.init(cgImage: cgimage, scale: scale, orientation: .up)
+    }
+
+    /**
+     Returns a transparent rectangle of given size with a border respecting the given radius.
+
+     - Parameters:
+       - color:     The color for the image.
+       - size:      The size of the image.
+       - radius:    The radius used if drawing rounded corners. Defaults to nil.
+       - isDashed:  A boolean that states if the drawn border is solid or dashed
+     - Returns:     Returns an image with a solid color of the given size.
+    */
+    public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool) throws {
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        guard let context = UIGraphicsGetCurrentContext() else {
+            throw ImageError.CantCreateContext
+        }
+
+        let rect = CGRect(origin: .zero, size: size)
+        context.setFillColor(UIColor.clear.cgColor)
+        context.fill(rect)
+
+        let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: radius).cgPath
+
+        context.addPath(clipPath)
+        context.setStrokeColor(color.cgColor)
+        context.setLineWidth(2.0)
+        
+        if isDashed {
+            context.setLineDash(phase: 0, lengths: [4])
+        }
+        context.strokePath()
+
         guard let cgimage = UIGraphicsGetImageFromCurrentImageContext()?.cgImage else {
             throw ImageError.CantCreateImage
         }
