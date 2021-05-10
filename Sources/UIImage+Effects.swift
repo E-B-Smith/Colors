@@ -89,6 +89,7 @@ extension UIImage {
     */
     public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool = false) throws {
         let scale = UIScreen.main.scale
+        let lineWidth: CGFloat = 2.0
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         defer { UIGraphicsEndImageContext() }
         guard let context = UIGraphicsGetCurrentContext() else {
@@ -99,11 +100,21 @@ extension UIImage {
         context.setFillColor(UIColor.clear.cgColor)
         context.fill(rect)
 
-        let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: radius).cgPath
+        let pathRect = CGRect(
+            origin: CGPoint(
+                x: 0 + lineWidth / 2,
+                y: 0 + lineWidth / 2
+            ),
+            size: CGSize(
+                width: size.width - lineWidth,
+                height: size.height - lineWidth
+            )
+        )
+        let clipPath: CGPath = UIBezierPath(roundedRect: pathRect, cornerRadius: radius).cgPath
 
         context.addPath(clipPath)
         context.setStrokeColor(color.cgColor)
-        context.setLineWidth(2.0)
+        context.setLineWidth(lineWidth)
         
         if isDashed {
             context.setLineDash(phase: 0, lengths: [4])
