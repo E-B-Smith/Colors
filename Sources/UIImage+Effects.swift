@@ -84,10 +84,10 @@ extension UIImage {
        - color:     The color for the border.
        - size:      The size of the image.
        - radius:    The radius used if drawing rounded corners. Defaults to 0.
-       - isDashed:  A boolean that states if the drawn border is solid or dashed. Defaults to false.
+       - isDashed:  A boolean that states if the drawn border is solid or dashed.
      - Returns:     Returns an image with a solid color of the given size.
     */
-    public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool = false) throws {
+    public convenience init(color: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool) throws {
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         defer { UIGraphicsEndImageContext() }
@@ -114,6 +114,45 @@ extension UIImage {
             throw ImageError.CantCreateImage
         }
         self.init(cgImage: cgimage, scale: scale, orientation: .up)
+    }
+
+    /**
+     Returns an image with a background of given size and color, with a border respecting the given radius.
+
+     - Parameters:
+       - icon:             The main image to add a background to.
+       - backgroundColor:  The color for the background.
+       - size:             The size of the background.
+       - radius:           The radius used if drawing rounded corners. Defaults to 0.
+     - Returns:            Returns an image with a solid color of the given size.
+    */
+
+    public static func iconWithBackground(_ icon: UIImage, backgroundColor: UIColor, size: CGSize, radius: CGFloat = 0) -> UIImage {
+
+        let backgroundImage = try? UIImage(color: backgroundColor, size: size, radius: radius)
+        let modifiedImage = try? backgroundImage?.union(icon)
+
+        return modifiedImage ?? icon
+    }
+
+    /**
+     Returns an image with a border of given size and color, and respecting the given radius.
+
+     - Parameters:
+       - icon:            The main image to add a background to.
+       - borderColor:     The color for the background.
+       - size:            The size of the background.
+       - radius:          The radius used if drawing rounded corners. Defaults to 0.
+       - isDashed:        A boolean that states if the drawn border is solid or dashed.
+     - Returns:           Returns an image with a border of the given color and size.
+    */
+
+    public static func iconWithBorder(_ icon: UIImage, borderColor: UIColor, size: CGSize, radius: CGFloat = 0, isDashed: Bool) -> UIImage {
+
+        let backgroundImage = try? UIImage(color: borderColor, size: size, radius: radius, isDashed: isDashed)
+        let modifiedImage = try? backgroundImage?.union(icon)
+
+        return modifiedImage ?? icon
     }
 
     /**

@@ -34,6 +34,7 @@ class ViewController: UIViewController {
             plainLogoView(),
             enhancedLogoView(),
             composedLogoView(),
+            iconWithBackground(name: "icon_calculator_grayscale"),
             iconWithRoundedRectangle(name: "icon_calculator_grayscale"),
             iconInView(name: "icon_briefcase_grayscale", scheme: .grayscale),
             iconInView(name: "icon_briefcase_grayscale", scheme: .inverse),
@@ -115,5 +116,11 @@ class ViewController: UIViewController {
 
         let newImage = try? image?.union(icon)
         return LabeledImage(text: "Icon with oval background", image: newImage!)
+    }
+
+    private func iconWithBackground(name: String) -> UIView {
+        let icon = AFIcon.named(name, scheme: .grayscale, size: CGSize(width: 50, height: 50))
+        let modifiedImage = UIImage.icon(icon, backgroundColor: .yellow, size: CGSize(width: 200, height: 92), radius: 50)
+        return LabeledImage(text: "Icon with solid background", image: modifiedImage)
     }
 }
