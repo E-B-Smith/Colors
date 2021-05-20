@@ -47,9 +47,11 @@ extension UIImage {
     public convenience init(_ image: UIImage) {
         if let cgimage = image.cgImage {
             self.init(cgImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
+            return
         }
         if let ciimage = image.ciImage {
             self.init(ciImage: ciimage, scale: image.scale, orientation: image.imageOrientation)
+            return
         }
         fatalError("Unknown image type: \(image.debugDescription).")
     }
