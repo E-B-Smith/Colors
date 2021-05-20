@@ -120,7 +120,7 @@ class ViewController: UIViewController {
 
     private func iconWithBackground(name: String) -> UIView {
         let icon = AFIcon.named(name, scheme: .grayscale, size: CGSize(width: 50, height: 50))
-        let modifiedImage = UIImage.icon(icon, backgroundColor: .yellow, size: CGSize(width: 200, height: 92), radius: 50)
+        let modifiedImage = UIImage(icon: icon, backgroundColor: .yellow, size: CGSize(width: 200, height: 92), radius: 50)
         return LabeledImage(text: "Icon with solid background", image: modifiedImage)
     }
 }
